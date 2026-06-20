@@ -1,6 +1,6 @@
 import "dotenv/config";
 import path from "path";
-import express, { Request, Response } from "express";
+import express, { Request, Response, NextFunction } from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import http from "http";
@@ -22,6 +22,15 @@ const server = http.createServer(app);
 
 //socket
 initializeSocket(server);
+
+// Shared initialization promise — ensures DB + abuse masker Trie are ready
+// before any request is processed (critical for Vercel serverless cold starts)
+let initPromise: Promise<void> | null = null;
+
+const initialize = async () => {
+  await connectDatabase();
+  await abuseMasker.loadWords();
+};
 
 app.use(express.json({ limit: "10mb" }));
 app.use(cookieParser());
@@ -46,6 +55,15 @@ app.use(
 );
 
 app.use(passport.initialize());
+
+// Ensure DB + abuse masker are initialized before handling any request
+// On Vercel serverless, requests can arrive before the cold-start init completes
+app.use(async (req: Request, res: Response, next: NextFunction) => {
+  if (initPromise) {
+    await initPromise;
+  }
+  next();
+});
 
 app.get(
   "/health",
@@ -74,15 +92,12 @@ app.use(errorHandler);
 
 if (!process.env.VERCEL) {
   server.listen(Env.PORT, async () => {
-    await connectDatabase();
-    // Load abuse words into Trie after database connection
-    await abuseMasker.loadWords();
+    await initialize();
     console.log(`Server running on port ${Env.PORT} in ${Env.NODE_ENV} mode`);
   });
 } else {
-  // Initialize db on cold start for Vercel Serverless
-  connectDatabase().then(() => abuseMasker.loadWords());
+  // On Vercel, start init immediately on cold start
+  initPromise = initialize();
 }
 
 export default app;
-
