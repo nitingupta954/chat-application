@@ -8,6 +8,7 @@ import {
   emitNewMessageToChatRoom,
 } from "../lib/socket";
 import UserModel from "../models/user.model";
+import abuseMasker from "../lib/abuseMasker";
 
 export const sendMessageService = async (
   userId: string,
@@ -18,7 +19,10 @@ export const sendMessageService = async (
     replyToId?: string;
   }
 ) => {
-  const { chatId, content, image, replyToId } = body;
+  const { chatId, image, replyToId } = body;
+
+  // Mask abusive words in message content before saving
+  const content = body.content ? abuseMasker.mask(body.content) : body.content;
 
   const chat = await ChatModel.findOne({
     _id: chatId,
