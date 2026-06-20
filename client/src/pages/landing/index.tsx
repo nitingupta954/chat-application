@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import { MessageSquare, Star, CheckCircle2, ArrowRight, Share2, AudioLines, Shield, Zap, Lock, Camera, Users, Moon } from "lucide-react";
+import { MessageSquare, Star, CheckCircle2, ArrowRight, Share2, AudioLines, Shield, Zap, Lock, Camera, Users, Moon, ShieldAlert } from "lucide-react";
 import "./landing.css";
 
 const Landing = () => {
@@ -113,9 +113,13 @@ const Landing = () => {
               <CheckCircle2 className="w-5 h-5 text-foreground" />
               <span>Encrypted cloud storage</span>
             </div>
-            <div className="flex items-center gap-2 justify-center xl:justify-start sm:col-span-2">
+            <div className="flex items-center gap-2 justify-center xl:justify-start">
               <CheckCircle2 className="w-5 h-5 text-foreground" />
               <span>Instant sync across devices</span>
+            </div>
+            <div className="flex items-center gap-2 justify-center xl:justify-start">
+              <CheckCircle2 className="w-5 h-5 text-foreground" />
+              <span>Intelligent abuse masking</span>
             </div>
           </motion.div>
         </div>
@@ -224,6 +228,19 @@ const Landing = () => {
             <Moon className="w-6 h-6 text-blue-500 mb-1" />
             <span className="font-semibold text-sm">Dark Mode</span>
             <span className="text-xs text-muted-foreground">Theme Switcher</span>
+          </motion.div>
+
+          {/* Bottom Right Badge */}
+          <motion.div 
+            initial={{ opacity: 0, x: 20, y: 30 }}
+            animate={{ opacity: 1, x: 0, y: 0 }}
+            transition={{ ease: "easeOut", duration: 0.8, delay: 1.2 }}
+            className="absolute bottom-24 -right-4 lg:-right-12 xl:-right-16 z-30 glass bg-background/80 px-5 py-3.5 rounded-2xl shadow-xl border border-border/60 flex flex-col items-center gap-1 min-w-[150px] animate-float-slow"
+            style={{ animationDelay: '1.5s' }}
+          >
+            <ShieldAlert className="w-6 h-6 text-red-500 mb-1" />
+            <span className="font-semibold text-sm">Abuse Masker</span>
+            <span className="text-xs text-muted-foreground">Safe Environment</span>
           </motion.div>
 
         </div>
@@ -385,6 +402,17 @@ const Landing = () => {
                <div className="flex flex-col justify-center">
                  <h3 className="text-2xl font-bold mb-2">Zustand State Engine</h3>
                  <p className="text-muted-foreground">Our client relies on incredibly lightweight global state architecture. Less re-renders, higher performance, and a completely buttery smooth scrolling experience.</p>
+               </div>
+            </div>
+
+            {/* Bento Block 5 (Full Width) */}
+            <div className="md:col-span-3 glass border border-border/50 rounded-3xl p-8 flex flex-col sm:flex-row gap-6 shadow-sm hover:shadow-md transition-shadow">
+               <div className="w-16 h-16 rounded-2xl bg-red-100 dark:bg-red-900/30 text-red-600 flex items-center justify-center shrink-0 border border-red-200 dark:border-red-800">
+                  <ShieldAlert className="w-8 h-8" />
+               </div>
+               <div className="flex flex-col justify-center">
+                 <h3 className="text-2xl font-bold mb-2">Real-time Abuse Masker</h3>
+                 <p className="text-muted-foreground">Our intelligent system automatically detects and masks offensive language in real-time. Keep your community safe and maintain a positive environment without manual moderation.</p>
                </div>
             </div>
           </div>
